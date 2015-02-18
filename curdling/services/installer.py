@@ -4,6 +4,7 @@ from .base import Service
 from distlib.wheel import Wheel
 
 import sys
+import sysconfig
 import os.path
 
 
@@ -16,11 +17,7 @@ def get_distribution_paths(name):
 
     paths = {
         'prefix' : '{prefix}',
-        'data'   : '{prefix}/lib/{pyver}/site-packages',
-        'purelib': '{prefix}/lib/{pyver}/site-packages',
-        'platlib': '{prefix}/lib/{pyver}/site-packages',
         'headers': '{prefix}/include/{pyver}/{name}',
-        'scripts': '{prefix}/bin',
     }
 
     # pip uses a similar path as an alternative to the system's (read-only)
@@ -32,6 +29,8 @@ def get_distribution_paths(name):
     # Replacing vars
     for key, val in paths.items():
         paths[key] = val.format(prefix=PREFIX, name=name, pyver=pyver)
+
+    paths.update(sysconfig.get_paths())
     return paths
 
 
